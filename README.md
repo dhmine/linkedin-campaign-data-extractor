@@ -17,7 +17,7 @@ In order to use the LinkedIn Campaign Data Extractor, you'll need the following:
 ### Installing
 
 1. Clone the repo
-   git clone https://git.datavault.tech/mohamed/linkedin-campaign-data-extractor.git
+   ```git clone https://git.datavault.tech/mohamed/linkedin-campaign-data-extractor.git
 2. Install Packages :
    pip install -r requirements.txt
 
@@ -25,6 +25,6 @@ In order to use the LinkedIn Campaign Data Extractor, you'll need the following:
 - Create a Linkedin credentials file
 - You can run the following command:
 
-python Script_linkedinAPI.py -s YYYY-MM-DD -e YYYY-MM-DD
+```python Script_linkedinAPI.py -s YYYY-MM-DD -e YYYY-MM-DD```
 
 Replace YYYY-MM-DD with the start and end dates for the data pull.
