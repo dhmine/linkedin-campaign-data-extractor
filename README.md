@@ -1,4 +1,3 @@
-
 # LinkedIn Campaign Data Extractor
 
 The LinkedIn Campaign Data Extractor is a Python script that fetches campaign data from LinkedIn's Ad accounts, and analyzes them based on a specific date range. 
