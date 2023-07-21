@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""
+Created on 03-07-2023
+@author: DHMINE Mohamed
+
+"""
+
+#Import librairies
+
 import requests
 import sys
 import json
@@ -9,6 +18,10 @@ import pandas as pd
 
 # Function to parse command line arguments
 def parse_arguments():
+    """
+    Parse command line arguments for start and end date.
+    :return: 
+    """
     parser = argparse.ArgumentParser(description='Process LinkedIn campaign data for a specific date range.')
     parser.add_argument('-s', '--start_date', help='The start date for the data pull in format YYYY-MM-DD', required=True)
     parser.add_argument('-e', '--end_date', help='The end date for the data pull in format YYYY-MM-DD', required=True)
@@ -22,11 +35,24 @@ end_date = datetime.strptime(args.end_date, '%Y-%m-%d')
 
 
 class LinkedInAdsManager:
+    """
+    Class for managing LinkedIn Ads interactions.
+    """
+
     def __init__(self, access_token):
+        """
+        Initialize LinkedInAdsManager object with access token.
+        :param access_token:
+        """
         self.access_token = access_token
         self.headers = {"Authorization": "Bearer " + self.access_token}
 
     def get_linkedin_ads_account(self):
+        """
+        Get LinkedIn ads account.
+
+        :return: account df
+        """
         url =  "https://api.linkedin.com/v2/adAccountsV2?q=search&search.type.values[0]=BUSINESS&search.status.values[0]=ACTIVE"
 
         r = requests.get(url = url, headers = self.headers)
@@ -50,6 +76,13 @@ class LinkedInAdsManager:
         return account_df
 
     def get_LinkedIn_campaigns_list(self, account, camapign_type_json):
+        """
+        Get LinkedIn campaigns list.
+
+        :param account:
+        :param camapign_type_json:
+        :return: campaign df
+        """
         url = "https://api.linkedin.com/v2/adCampaignsV2?q=search&search.account.values[0]=urn:li:sponsoredAccount:" + str(account)
 
         r = requests.get(url = url, headers = self.headers)
@@ -80,6 +113,13 @@ class LinkedInAdsManager:
         return campaign_data_df
 
     def _get_campaign_type(self, campaign_obj, camapign_type_json):
+        """
+        Get campaign type.
+
+        :param campaign_obj:
+        :param camapign_type_json:
+        :return:
+        """
         if campaign_obj in camapign_type_json["off_site"]:
             return "off_site"
         elif campaign_obj in camapign_type_json["on_site"]:
@@ -89,6 +129,15 @@ class LinkedInAdsManager:
             return None
 
     def get_LinkedIn_campaign(self, campaigns_ids, s_date, e_date, qry_type):
+        """
+        Get LinkedIn campaign.
+
+        :param campaigns_ids:
+        :param s_date:
+        :param e_date:
+        :param qry_type:
+        :return: analytics campaign data
+        """
         campaign_analytics_data = pd.DataFrame(columns=["campaign_id", "start_date", "end_date", "costInUsd",
                                                         "costInLocalCurrency", "dateRange", "sends", "impressions", "clicks"])
 
@@ -133,7 +182,7 @@ if __name__ == "__main__":
     accounts_df = ads_manager.get_linkedin_ads_account()
     print(accounts_df)
     # assuming we are working with FP account
-    account_id = "500080012"    
+    account_id = cred_json["account_id"]  
 
     # define campaign type
     campaign_type = {"on_site": ["LEAD_GEN", "VIDEO_VIEW", "JOB_APPLY"], "off_site": ["FOLLOW_COMPANY", "WEBSITE_VISIT", "ENGAGEMENT"]}
@@ -147,12 +196,6 @@ if __name__ == "__main__":
     # merge the campaigns_list and campaings dataframes
     campaigns_list.campaign_id = campaigns_list.campaign_id.astype(int)
     df = campaigns_list.merge(campaigns, on='campaign_id', how='outer')
-
-    """ df['costInLocalCurrency'] = df.costInLocalCurrency.astype(float)
-    df['costInUsd'] = df.costInUsd.astype(float)
-    print(df.groupby(['campaign_name', 'campaign_id'])['clicks', 'impressions', 
-                                                       'costInLocalCurrency', 'costInUsd'].sum().reset_index().sort_values(by='costInLocalCurrency', ascending= False))
-    df.to_excel('test1.xlsx')"""
-    print(df )
+    print(df)
    
 

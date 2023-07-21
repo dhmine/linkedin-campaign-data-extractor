@@ -1,5 +1,6 @@
-ln_Credentials.json
-__pycache__/
-*.py[cod]
+# Python:
+*.pyc
+__pycache__
+
 # Virtual environment:
-env/
+env1/
